@@ -15,13 +15,13 @@ import os
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from network import NeuralNetwork
-from layers import DenseLayer
-from activations import Sigmoid, Tanh, ReLU, LeakyReLU, Softmax, Linear
-from losses import MSE, BinaryCrossEntropy, CategoricalCrossEntropy
-from optimizers import SGD, SGDMomentum, RMSprop, Adam
-from utils import generate_spiral_data, generate_xor_data, normalize_data
-import metrics
+from src.network import NeuralNetwork
+from src.layers import DenseLayer
+from src.activations import Sigmoid, Tanh, ReLU, LeakyReLU, Softmax, Linear
+from src.losses import MSE, BinaryCrossEntropy, CategoricalCrossEntropy
+from src.optimizers import SGD, SGDMomentum, RMSprop, Adam
+from src.utils import generate_spiral_data, generate_xor_data, normalize_data
+import src.metrics
 
 st.set_page_config(page_title="NN Playground", page_icon="🧠", layout="wide")
 

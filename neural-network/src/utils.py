@@ -4,6 +4,46 @@ Utility functions for neural network: learning rate schedules and visualization.
 
 import numpy as np
 
+def generate_xor_data(n_samples=200):
+    """Generate XOR dataset."""
+    np.random.seed(42)
+    X = np.random.randn(n_samples, 2)
+    # XOR logic: (0,0)->0, (0,1)->1, (1,0)->1, (1,1)->0
+    # Create 4 clusters
+    X[:n_samples//4] += np.array([-1, -1])
+    X[n_samples//4:n_samples//2] += np.array([-1, 1])
+    X[n_samples//2:3*n_samples//4] += np.array([1, -1])
+    X[3*n_samples//4:] += np.array([1, 1])
+    y = np.zeros(n_samples)
+    y[n_samples//4:3*n_samples//4] = 1
+    return X, y
+
+
+def generate_spiral_data(n_samples=300, n_classes=3):
+    """Generate spiral dataset."""
+    np.random.seed(42)
+    X = np.zeros((n_samples * n_classes, 2))
+    y = np.zeros(n_samples * n_classes, dtype=int)
+    
+    for class_idx in range(n_classes):
+        ix = range(n_samples * class_idx, n_samples * (class_idx + 1))
+        r = np.linspace(0.0, 1, n_samples)
+        t = np.linspace(class_idx * 4, (class_idx + 1) * 4, n_samples) + np.random.randn(n_samples) * 0.2
+        X[ix] = np.c_[r * np.sin(t), r * np.cos(t)]
+        y[ix] = class_idx
+    
+    return X, y
+
+
+def normalize_data(X):
+    """Normalize data to zero mean and unit variance."""
+    mean = np.mean(X, axis=0)
+    std = np.std(X, axis=0)
+    std[std == 0] = 1  # Avoid division by zero
+    return (X - mean) / std
+
+
+
 
 def step_decay(initial_lr, epoch, drop_rate=0.5, epochs_drop=10):
     """Step decay: lr = initial_lr * drop_rate^(epoch // epochs_drop)"""
