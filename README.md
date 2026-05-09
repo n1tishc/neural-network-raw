@@ -37,7 +37,6 @@ playground/
 │   │   └── README.md
 │   ├── requirements.txt
 │   └── README.md
-<!-- ├── nn-from-scratch-plan.md -->
 └── README.md
 ```
 
