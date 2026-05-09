@@ -18,10 +18,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 from src.network import NeuralNetwork
 from src.layers import DenseLayer
 from src.activations import Sigmoid, Tanh, ReLU, LeakyReLU, Softmax, Linear
-from src.losses import MSE, BinaryCrossEntropy, CategoricalCrossEntropy
-from src.optimizers import SGD, SGDMomentum, RMSprop, Adam
 from src.utils import generate_spiral_data, generate_xor_data, normalize_data
-import src.metrics
 
 st.set_page_config(page_title="NN Playground", page_icon="🧠", layout="wide")
 
@@ -84,23 +81,23 @@ def get_activation(name):
     }
     return mapping[name]
 
-def get_optimizer(name, lr):
-    """Map optimizer name to instance."""
-    if name == "SGD":
-        return SGD(learning_rate=lr)
-    elif name == "SGD+Momentum":
-        return SGDMomentum(learning_rate=lr, beta=0.9)
-    elif name == "RMSprop":
-        return RMSprop(learning_rate=lr, beta=0.9)
-    else:
-        return Adam(learning_rate=lr, beta1=0.9, beta2=0.999)
-
-def get_loss(name):
-    """Map loss name to instance."""
+def get_optimizer_name(name):
+    """Map UI optimizer name to NeuralNetwork.compile() key."""
     mapping = {
-        "MSE": MSE(),
-        "Binary Cross-Entropy": BinaryCrossEntropy(),
-        "Categorical Cross-Entropy": CategoricalCrossEntropy()
+        "SGD": "sgd",
+        "SGD+Momentum": "sgd_momentum",
+        "RMSprop": "rmsprop",
+        "Adam": "adam",
+    }
+    return mapping[name]
+
+
+def get_loss_name(name):
+    """Map UI loss name to NeuralNetwork.compile() key."""
+    mapping = {
+        "MSE": "mse",
+        "Binary Cross-Entropy": "binary_crossentropy",
+        "Categorical Cross-Entropy": "categorical_crossentropy",
     }
     return mapping[name]
 
@@ -120,7 +117,7 @@ def generate_dataset(name):
             y = y_onehot
         else:
             y = y.reshape(-1, 1)
-        return X, y, 2, n_classes
+        return X, y, 2, (1 if n_classes == 2 else n_classes)
     else:  # Regression
         np.random.seed(42)
         X = np.linspace(-5, 5, 200).reshape(-1, 1)
@@ -142,17 +139,17 @@ with col1:
         prev_dim = input_dim
         
         for size, act_name in layers_config:
-            nn.add_layer(DenseLayer(prev_dim, size))
-            nn.add_layer(get_activation(act_name))
+            nn.add_layer(DenseLayer(prev_dim, size, activation=get_activation(act_name)))
             prev_dim = size
         
-        nn.add_layer(DenseLayer(prev_dim, output_dim))
-        nn.add_layer(get_activation(output_activation))
+        nn.add_layer(DenseLayer(prev_dim, output_dim, activation=get_activation(output_activation)))
         
         # Compile
-        optimizer = get_optimizer(optimizer_name, learning_rate)
-        loss_fn = get_loss(loss_name)
-        nn.compile(loss=loss_fn, optimizer=optimizer)
+        nn.compile(
+            loss=get_loss_name(loss_name),
+            optimizer=get_optimizer_name(optimizer_name),
+            learning_rate=learning_rate,
+        )
         
         # Train with progress
         progress_bar = st.progress(0)
