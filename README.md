@@ -6,7 +6,7 @@ Local playground project for experimenting with a neural network built from scra
 
 - `neural-network/` — main neural network implementation
 - `neural-network/playground/` — local Streamlit app to interactively test features
-<!-- - `nn-from-scratch-plan.md` — original implementation plan -->
+- `nn-from-scratch-plan.md` — original implementation plan
 
 ## Features
 
@@ -37,7 +37,7 @@ playground/
 │   │   └── README.md
 │   ├── requirements.txt
 │   └── README.md
-<!-- ├── nn-from-scratch-plan.md -->
+├── nn-from-scratch-plan.md
 └── README.md
 ```
 
@@ -83,4 +83,4 @@ python test_network.py
 
 - The web app is intended for local experimentation.
 - If imports fail, run commands from inside `neural-network/` or activate the virtual environment first.
-<!-- - The main implementation README is in `neural-network/README.md`. -->
+- The main implementation README is in `neural-network/README.md`.
